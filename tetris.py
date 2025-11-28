@@ -1,6 +1,7 @@
-import pygame
 import random
 import sys
+
+import pygame
 
 # Game configuration
 s_width = 800
@@ -13,117 +14,53 @@ top_left_x = (s_width - play_width) // 2
 top_left_y = s_height - play_height - 50
 
 # Shapes (Tetriminos) represented as 5x5 grids per rotation
-S = [['.....',
-      '.....',
-      '..00.',
-      '.00..',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '...0.',
-      '.....']]
+S = [
+    [".....", ".....", "..00.", ".00..", "....."],
+    [".....", "..0..", "..00.", "...0.", "....."],
+]
 
-Z = [['.....',
-      '.....',
-      '.00..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '.0...',
-      '.....']]
+Z = [
+    [".....", ".....", ".00..", "..00.", "....."],
+    [".....", "..0..", ".00..", ".0...", "....."],
+]
 
-I = [['..0..',
-      '..0..',
-      '..0..',
-      '..0..',
-      '.....'],
-     ['.....',
-      '0000.',
-      '.....',
-      '.....',
-      '.....']]
+I = [
+    ["..0..", "..0..", "..0..", "..0..", "....."],
+    [".....", "0000.", ".....", ".....", "....."],
+]
 
-O = [['.....',
-      '.....',
-      '.00..',
-      '.00..',
-      '.....']]
+O = [[".....", ".....", ".00..", ".00..", "....."]]
 
-J = [['.....',
-      '.0...',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..00.',
-      '..0..',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '...0.',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '.00..',
-      '.....']]
+J = [
+    [".....", ".0...", ".000.", ".....", "....."],
+    [".....", "..00.", "..0..", "..0..", "....."],
+    [".....", ".....", ".000.", "...0.", "....."],
+    [".....", "..0..", "..0..", ".00..", "....."],
+]
 
-L = [['.....',
-      '...0.',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..0..',
-      '..00.',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '.0...',
-      '.....'],
-     ['.....',
-      '.00..',
-      '..0..',
-      '..0..',
-      '.....']]
+L = [
+    [".....", "...0.", ".000.", ".....", "....."],
+    [".....", "..0..", "..0..", "..00.", "....."],
+    [".....", ".....", ".000.", ".0...", "....."],
+    [".....", ".00..", "..0..", "..0..", "....."],
+]
 
-T = [['.....',
-      '..0..',
-      '.000.',
-      '.....',
-      '.....'],
-     ['.....',
-      '..0..',
-      '..00.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '.....',
-      '.000.',
-      '..0..',
-      '.....'],
-     ['.....',
-      '..0..',
-      '.00..',
-      '..0..',
-      '.....']]
+T = [
+    [".....", "..0..", ".000.", ".....", "....."],
+    [".....", "..0..", "..00.", "..0..", "....."],
+    [".....", ".....", ".000.", "..0..", "....."],
+    [".....", "..0..", ".00..", "..0..", "....."],
+]
 
 shapes = [S, Z, I, O, J, L, T]
 shape_colors = [
     (80, 230, 150),  # S - greenish
-    (230, 90, 90),   # Z - red
+    (230, 90, 90),  # Z - red
     (90, 200, 255),  # I - cyan
-    (240, 240, 120), # O - yellow
-    (100, 140, 230), # J - blue
+    (240, 240, 120),  # O - yellow
+    (100, 140, 230),  # J - blue
     (255, 170, 70),  # L - orange
-    (190, 100, 220)  # T - purple
+    (190, 100, 220),  # T - purple
 ]
 
 
@@ -154,14 +91,16 @@ def convert_shape_format(piece):
     for i, line in enumerate(format):
         row = list(line)
         for j, column in enumerate(row):
-            if column == '0':
+            if column == "0":
                 positions.append((piece.x + j - 2, piece.y + i - 4))
 
     return positions
 
 
 def valid_space(piece, grid):
-    accepted_positions = [(j, i) for i in range(20) for j in range(10) if grid[i][j] == (0, 0, 0)]
+    accepted_positions = [
+        (j, i) for i in range(20) for j in range(10) if grid[i][j] == (0, 0, 0)
+    ]
     formatted = convert_shape_format(piece)
 
     for pos in formatted:
@@ -174,7 +113,7 @@ def valid_space(piece, grid):
 
 
 def check_lost(positions):
-    for (x, y) in positions:
+    for x, y in positions:
         if y < 1:
             return True
     return False
@@ -185,11 +124,16 @@ def get_shape():
 
 
 def draw_text_middle(surface, text, size, color):
-    font = pygame.font.SysFont('arial', size, bold=True)
+    font = pygame.font.SysFont("arial", size, bold=True)
     label = font.render(text, True, color)
 
-    surface.blit(label, (top_left_x + play_width / 2 - label.get_width() / 2,
-                         top_left_y + play_height / 2 - label.get_height() / 2))
+    surface.blit(
+        label,
+        (
+            top_left_x + play_width / 2 - label.get_width() / 2,
+            top_left_y + play_height / 2 - label.get_height() / 2,
+        ),
+    )
 
 
 def draw_grid(surface, grid):
@@ -197,9 +141,19 @@ def draw_grid(surface, grid):
     sy = top_left_y
 
     for i in range(len(grid)):
-        pygame.draw.line(surface, (40, 40, 40), (sx, sy + i * block_size), (sx + play_width, sy + i * block_size))
+        pygame.draw.line(
+            surface,
+            (40, 40, 40),
+            (sx, sy + i * block_size),
+            (sx + play_width, sy + i * block_size),
+        )
         for j in range(len(grid[i])):
-            pygame.draw.line(surface, (40, 40, 40), (sx + j * block_size, sy), (sx + j * block_size, sy + play_height))
+            pygame.draw.line(
+                surface,
+                (40, 40, 40),
+                (sx + j * block_size, sy),
+                (sx + j * block_size, sy + play_height),
+            )
 
 
 def clear_rows(grid, locked):
@@ -233,8 +187,8 @@ def clear_rows(grid, locked):
 
 
 def draw_next_shape(piece, surface):
-    font = pygame.font.SysFont('arial', 24)
-    label = font.render('Next', True, (255, 255, 255))
+    font = pygame.font.SysFont("arial", 24)
+    label = font.render("Next", True, (255, 255, 255))
 
     sx = top_left_x + play_width + 30
     sy = top_left_y + play_height / 2 - 100
@@ -245,9 +199,13 @@ def draw_next_shape(piece, surface):
     for i, line in enumerate(format):
         row = list(line)
         for j, column in enumerate(row):
-            if column == '0':
-                pygame.draw.rect(surface, piece.color,
-                                 (sx + j * block_size, sy + i * block_size, block_size, block_size), 0)
+            if column == "0":
+                pygame.draw.rect(
+                    surface,
+                    piece.color,
+                    (sx + j * block_size, sy + i * block_size, block_size, block_size),
+                    0,
+                )
     # Outline
     outline_rect = pygame.Rect(sx, sy, 5 * block_size, 5 * block_size)
     pygame.draw.rect(surface, (200, 200, 200), outline_rect, 2)
@@ -257,14 +215,14 @@ def draw_window(surface, grid, score=0):
     surface.fill((15, 15, 20))
 
     # Title
-    font = pygame.font.SysFont('arial', 36, bold=True)
-    label = font.render('TETRIS', True, (255, 255, 255))
+    font = pygame.font.SysFont("arial", 36, bold=True)
+    label = font.render("TETRIS", True, (255, 255, 255))
 
     surface.blit(label, (top_left_x + play_width / 2 - label.get_width() / 2, 20))
 
     # Current score
-    font = pygame.font.SysFont('arial', 24)
-    label = font.render(f'Score: {score}', True, (255, 255, 255))
+    font = pygame.font.SysFont("arial", 24)
+    label = font.render(f"Score: {score}", True, (255, 255, 255))
 
     sx = top_left_x + play_width + 30
     sy = top_left_y + play_height / 2 - 160
@@ -272,15 +230,26 @@ def draw_window(surface, grid, score=0):
     surface.blit(label, (sx, sy - 60))
 
     # Draw play area
-    pygame.draw.rect(surface, (200, 200, 200), (top_left_x, top_left_y, play_width, play_height), 4)
+    pygame.draw.rect(
+        surface, (200, 200, 200), (top_left_x, top_left_y, play_width, play_height), 4
+    )
 
     # Draw grid blocks
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             color = grid[i][j]
             if color != (0, 0, 0):
-                pygame.draw.rect(surface, color,
-                                 (top_left_x + j * block_size, top_left_y + i * block_size, block_size, block_size), 0)
+                pygame.draw.rect(
+                    surface,
+                    color,
+                    (
+                        top_left_x + j * block_size,
+                        top_left_y + i * block_size,
+                        block_size,
+                        block_size,
+                    ),
+                    0,
+                )
 
     draw_grid(surface, grid)
 
@@ -345,7 +314,9 @@ def main(surface):
                 elif event.key == pygame.K_UP:
                     # rotate
                     prev_rotation = current_piece.rotation
-                    current_piece.rotation = (current_piece.rotation + 1) % len(current_piece.shape)
+                    current_piece.rotation = (current_piece.rotation + 1) % len(
+                        current_piece.shape
+                    )
                     if not valid_space(current_piece, grid):
                         # Try simple wall kicks (shift left or right by 1)
                         current_piece.x += 1
@@ -389,7 +360,7 @@ def main(surface):
 
         if check_lost(locked_positions):
             draw_window(surface, grid, score)
-            draw_text_middle(surface, 'GAME OVER', 48, (255, 80, 80))
+            draw_text_middle(surface, "GAME OVER", 48, (255, 80, 80))
             pygame.display.update()
             pygame.time.delay(1800)
             run = False
@@ -398,12 +369,12 @@ def main(surface):
 def main_menu():
     pygame.init()
     surface = pygame.display.set_mode((s_width, s_height))
-    pygame.display.set_caption('Tetris - Pygame')
+    pygame.display.set_caption("Tetris - Pygame")
 
     run = True
     while run:
         surface.fill((15, 15, 20))
-        draw_text_middle(surface, 'Tekan ENTER untuk mulai', 36, (255, 255, 255))
+        draw_text_middle(surface, "Tekan ENTER untuk mulai", 36, (255, 255, 255))
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -414,5 +385,5 @@ def main_menu():
     pygame.quit()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main_menu()
